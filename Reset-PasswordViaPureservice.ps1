@@ -10,7 +10,7 @@ if (!($WaitFor -eq $null)) {
     until ($proc -eq $null)
 }
 
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/NikolaiPoverud/PureservicePasswordReset/master/ResetADPassword.ps1" -OutFile "C:\Pureservice\ResetADPassword.ps1" -UseBasicParsing
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/ResetADPassword.ps1" -OutFile "C:\Pureservice\ResetADPassword.ps1" -UseBasicParsing
 
 
 $Path = "C:\Pureservice"

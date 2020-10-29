@@ -4,11 +4,11 @@
 
 
 function Create-RandomPassword {
-    $Liste1 = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/NikolaiPoverud/PureservicePasswordReset/master/Liste1.txt" -UseBasicParsing).ToString()
+    $Liste1 = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/Pronomen.txt" -UseBasicParsing).ToString()
     $Liste1 = $Liste1 -split '[\r\n]'
-    $Liste2 = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/NikolaiPoverud/PureservicePasswordReset/master/Liste2.txt" -UseBasicParsing).ToString()
+    $Liste2 = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/Verb.txt" -UseBasicParsing).ToString()
     $Liste2 = $Liste2 -split '[\r\n]'
-    $Liste3 = (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/NikolaiPoverud/PureservicePasswordReset/master/liste.txt" -UseBasicParsing).ToString()
+    $Liste3 = (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/Byer.txt" -UseBasicParsing).ToString()
     $Liste3 = $Liste3 -split '[\r\n]'
     $Word1 = $Liste1 | Sort-Object { Get-Random } -Unique | Select-Object -first 1
     $Word2 = $Liste2 | Sort-Object { Get-random } -Unique | Select-Object -first 1
@@ -25,8 +25,8 @@ function Create-RandomPassword {
 ##Config stuff
 $config = Get-Content C:\Pureservice\config.json | convertfrom-json
 
-$Version = 1.5
-$versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/NikolaiPoverud/PureservicePasswordReset/master/version.json" -UseBasicParsing
+$Version = 1.6
+$versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/version.json" -UseBasicParsing
 Write-Host "Sjekker versjonsnummer... Du kjører versjon $Version..."
 
 if ($Version -eq $versionCheck) {
@@ -34,7 +34,7 @@ if ($Version -eq $versionCheck) {
 }
 else {
     Write-Host "Ny versjon er $Versioncheck... Oppdaterer scriptet"
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/NikolaiPoverud/PureservicePasswordReset/master/Reset-PasswordViaPureservice.ps1" -OutFile "C:\Pureservice\Reset-PasswordViaPureservice.ps1" -UseBasicParsing
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/Reset-PasswordViaPureservice.ps1" -OutFile "C:\Pureservice\Reset-PasswordViaPureservice.ps1" -UseBasicParsing
     Start-Sleep 1
     if ($ticketnumber) {
         Start-Process "powershell.exe" -ArgumentList "-File `"C:\Pureservice\Reset-PasswordViaPureservice.ps1`" -WaitFor $PID -ticketNumber $ticketnumber"
@@ -87,8 +87,8 @@ if ($ticketnumber) {
                 description     = $ticketQuery.tickets.description
                 solution        = "Passordet for bruker med brukernavn $username er satt til '$pw' og endres ved første pålogging. NB! Nytt passordkrav er på 16 tegn. 
 
-                Visste du at man kan resette sitt eget passord dersom man har lagret mobilnummeret sitt i HR-systemet? Da skriver man en SMS: HRTPASS og sender til 26112. Da vil man få nytt passord på SMS.
-                Pass derfor på å ha riktig informasjon i HR-systemet. Man kan sjekke sine egne opplysninger på https://isubw-web.intern.i-sone.no/BW_Prod_Web/default.aspx (denne finner man også på skrivebordet og på selvbetjening på intranett - HR Web)"
+                Visste du at man kan resette sitt eget passord dersom man har lagret mobilnummeret sitt i HR-systemet? Da skriver man en SMS: HRTPASS og sender til $($config.resetNumber). Da vil man få nytt passord på SMS.
+                Pass derfor på å ha riktig informasjon i HR-systemet. Man kan sjekke sine egne opplysninger på $($config.linktoHR) (denne finner man også på skrivebordet og på selvbetjening på intranett - HR Web)"
             
                 assignedTeamId  = 1 
                 assignedAgentId = $Agent.id
