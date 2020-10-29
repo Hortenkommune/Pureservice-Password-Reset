@@ -1,2 +1,2 @@
-# PureservicePasswordReset
-This repo is dedicated to a module I built using Powershell to build sentence passwords automatic for helpdesk-staff. 
+# Pureservice password reset module
+Powershell script to automatic build and reset secure passwords. With automatic update of scripts.
