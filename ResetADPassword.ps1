@@ -25,9 +25,15 @@ function Create-RandomPassword {
 ##Config stuff
 $config = Get-Content C:\Pureservice\config.json | convertfrom-json
 
-$Version = 1.6
+$Version = 1.7
 $versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/version.json" -UseBasicParsing
 Write-Host "Sjekker versjonsnummer... Du kjører versjon $Version..."
+
+#added cleanup
+If(Test-Path C:\Pureservice\Reset-PasswordViaPureservice.ps1){
+    Remove-Item -Path C:\Pureservice\Reset-PasswordViaPureservice.ps1
+    write-host "Dette virker"
+}
 
 if ($Version -eq $versionCheck) {
     Write-Host "Du er allerede på nyeste versjon... Fortsetter"
@@ -57,7 +63,7 @@ if ($ticketnumber) {
   
 
     # Get User from Active Directory
-    $UserName = Read-Host "Please specify users username"
+    $UserName = Read-Host "Vennligst spesifiser brukernavn"
     $userObj = Get-ADUser -Filter { SamAccountName -eq $UserName } -Properties mail, LockedOut
     $userName = $userObj.SamAccountName
     Unlock-ADAccount -Identity $userObj
@@ -113,7 +119,7 @@ if ($ticketnumber) {
     
 }
 else {
-    $UserName = Read-Host "Please specify users username"
+    $UserName = Read-Host "Vennligst spesifiser brukernavn"
     $userObj = Get-ADUser -Filter { SamAccountName -eq $UserName } -Properties mail, LockedOut
     $userName = $userObj.SamAccountName
     Unlock-ADAccount -Identity $userObj
@@ -125,7 +131,7 @@ else {
         Unlock-ADAccount -Identity $userObj
     }
 
-    Write-Host "Passord satt til: '$pw'"
+    Write-Host "Passord satt til: $pw"
 
     pause
 }
