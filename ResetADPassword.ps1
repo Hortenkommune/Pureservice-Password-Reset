@@ -25,14 +25,13 @@ function Create-RandomPassword {
 ##Config stuff
 $config = Get-Content C:\Pureservice\config.json | convertfrom-json
 
-$Version = 1.7
+$Version = 1.71
 $versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/version.json" -UseBasicParsing
 Write-Host "Sjekker versjonsnummer... Du kjører versjon $Version..."
 
 #added cleanup
 If(Test-Path C:\Pureservice\Reset-PasswordViaPureservice.ps1){
-    Remove-Item -Path C:\Pureservice\Reset-PasswordViaPureservice.ps1
-    write-host "Dette virker"
+    Remove-Item -Path "C:\Pureservice\Reset-PasswordViaPureservice.ps1"
 }
 
 if ($Version -eq $versionCheck) {
