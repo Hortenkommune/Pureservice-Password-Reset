@@ -25,7 +25,7 @@ function Create-RandomPassword {
 ##Config stuff
 $config = Get-Content C:\Pureservice\config.json | convertfrom-json
 
-$Version = 1.71
+$Version = 1.72
 $versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/version.json" -UseBasicParsing
 Write-Host "Sjekker versjonsnummer... Du kjører versjon $Version..."
 
@@ -90,10 +90,11 @@ if ($ticketnumber) {
                 id              = $ticketID
                 subject         = $ticketQuery.tickets.subject
                 description     = $ticketQuery.tickets.description
-                solution        = "Passordet for bruker med brukernavn $username er satt til '$pw' og endres ved første pålogging. NB! Nytt passordkrav er på 16 tegn. 
+                solution        = "Passordet for bruker med brukernavn $username er satt til '$pw' og endres ved første pålogging.
 
                 Visste du at man kan resette sitt eget passord dersom man har lagret mobilnummeret sitt i HR-systemet? Da skriver man en SMS: HRTPASS og sender til $($config.resetNumber). Da vil man få nytt passord på SMS.
-                Pass derfor på å ha riktig informasjon i HR-systemet. Man kan sjekke sine egne opplysninger på $($config.linktoHR) (denne finner man også på skrivebordet og på selvbetjening på intranett - HR Web)"
+                Pass derfor på å ha riktig informasjon i HR-systemet. Man kan sjekke sine egne opplysninger på $($config.linktoHR) (denne finner man også på skrivebordet og på selvbetjening på intranett - HR Web)
+                Vi setter pris på om dere sender brukernavn i passordhenvendelser, det gjør jobben til oss på IT litt lettere."
             
                 assignedTeamId  = 1 
                 assignedAgentId = $Agent.id
