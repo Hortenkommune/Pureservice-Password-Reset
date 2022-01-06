@@ -25,7 +25,7 @@ function Create-RandomPassword {
 ##Config stuff
 $config = Get-Content C:\Pureservice\config.json | convertfrom-json
 
-$Version = 1.72
+$Version = 1.72.1
 $versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/version.json" -UseBasicParsing
 Write-Host "Sjekker versjonsnummer... Du kjører versjon $Version..."
 
@@ -50,6 +50,7 @@ else {
     break
 }
 
+$Credentials = Get-Credentials -Message "Bruker med tilatelse til å resette passord..."
 
 if ($ticketnumber) {
     
@@ -63,9 +64,9 @@ if ($ticketnumber) {
 
     # Get User from Active Directory
     $UserName = Read-Host "Vennligst spesifiser brukernavn"
-    $userObj = Get-ADUser -Filter { SamAccountName -eq $UserName } -Properties mail, LockedOut
+    $userObj = Get-ADUser -Filter { SamAccountName -eq $UserName } -Properties mail, LockedOut -Credentials $Credentials
     $userName = $userObj.SamAccountName
-    Unlock-ADAccount -Identity $userObj
+    Unlock-ADAccount -Identity $userObj -Credentials $Credentials
 
 
     # Get ticket info
@@ -74,14 +75,14 @@ if ($ticketnumber) {
     $ticketId = $ticketQuery.tickets.Id
 
     #Get agent to assign ticket
-    $AdSearch = Get-ADUser -Filter "SamAccountName -eq '$env:USERNAME'" -pr cn, displayName
+    $AdSearch = Get-ADUser -Filter "SamAccountName -eq '$env:USERNAME'" -pr cn, displayName -Credentials $Credentials
     $GetAgents = invoke-restmethod -uri "$BaseUri/api/user/?filter=$($config.pureserviceFilter)" -headers $headers | Select-Object -ExpandProperty users | Select-Object fullName, id
     $Agent = $GetAgents | Where-Object { $_.fullName -contains $AdSearch.displayName } | Select-Object id
 
     $pw = Create-RandomPassword
 
     # Send the command to change password in Active Directory
-    Set-ADAccountPassword -Identity $username -NewPassword (ConvertTo-SecureString -AsPlainText "$pw" -Force) -Reset 
+    Set-ADAccountPassword -Identity $username -NewPassword (ConvertTo-SecureString -AsPlainText "$pw" -Force) -Reset -Credentials $Credentials
   
     # Close ticket and notify user
     $CloseBody = [PSCustomObject]@{
@@ -120,15 +121,15 @@ if ($ticketnumber) {
 }
 else {
     $UserName = Read-Host "Vennligst spesifiser brukernavn"
-    $userObj = Get-ADUser -Filter { SamAccountName -eq $UserName } -Properties mail, LockedOut
+    $userObj = Get-ADUser -Filter { SamAccountName -eq $UserName } -Properties mail, LockedOut -Credentials $Credentials
     $userName = $userObj.SamAccountName
-    Unlock-ADAccount -Identity $userObj
+    Unlock-ADAccount -Identity $userObj -Credentials $Credentials
 
     $pw = Create-RandomPassword
-    Set-ADAccountPassword -Identity $userobj -NewPassword (ConvertTo-SecureString -AsPlainText "$pw" -Force) -Reset 
-    Set-ADUser -Identity $userobj -ChangePasswordAtLogon $true
+    Set-ADAccountPassword -Identity $userobj -NewPassword (ConvertTo-SecureString -AsPlainText "$pw" -Force) -Reset -Credentials $Credentials 
+    Set-ADUser -Identity $userobj -ChangePasswordAtLogon $true -Credentials $Credentials
     if ($userobj.enabled -eq $false) {
-        Unlock-ADAccount -Identity $userObj
+        Unlock-ADAccount -Identity $userObj -Credentials $Credentials
     }
 
     Write-Host "Passord satt til: $pw"
