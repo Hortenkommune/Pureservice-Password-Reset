@@ -25,7 +25,7 @@ function Create-RandomPassword {
 ##Config stuff
 $config = Get-Content C:\Pureservice\config.json | convertfrom-json
 
-$Version = "1.72.2"
+$Version = "1.72.3"
 $versionCheck = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Hortenkommune/Pureservice-Password-Reset/master/version.json" -UseBasicParsing
 Write-Host "Sjekker versjonsnummer... Du kjører versjon $Version..."
 
@@ -50,7 +50,7 @@ else {
     break
 }
 
-$Credentials = Get-Credentials -Message "Bruker med tilatelse til å resette passord..."
+$Credentials = Get-Credential -Message "Bruker med tilatelse til å resette passord..."
 
 if ($ticketnumber) {
     
